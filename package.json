@@ -1,4 +1,5 @@
 {
+  "main": "src/importer.js",
   "scripts": {
     "test": "mocha --recursive"
   },
