@@ -7,7 +7,7 @@ const importer = require('./importer')
  * @param {Object} options - Configuration object
  * @param {String} options.endpoint - API endpoint
  * @param {String} [options.dest = __dirname] - Destination base folder (then dispatched by content types)
- * @param {Object} options.contentTypes - Content types to be imported and their configuration
+ * @param {Object[]} options.contentTypes - Content types to be imported and their configuration
  * @throws Throws an error if `options.endpoint` is not defined.
  * @return {Function}
  */

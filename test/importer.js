@@ -4,7 +4,7 @@ const importer = require('../src/importer');
 const i = importer({
   handle: 'foo',
   dest: './',
-  contentTypes: { bar: 'baz' }
+  contentTypes: [ { type: 'bar' } ]
 })
 
 describe('The import function', () => {

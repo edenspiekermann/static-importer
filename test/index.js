@@ -1,7 +1,7 @@
 const assert = require('assert');
 const main = require('../src');
 
-const m = main({ endpoint: 'foo', contentTypes: { foo: 'bar' } });
+const m = main({ endpoint: 'foo', contentTypes: [ { type: 'bar' } ] });
 
 describe('The main module', () => {
   it('should throw if no `endpoint` option given', () => {

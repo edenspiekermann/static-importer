@@ -1,8 +1,56 @@
 const request = require('request-promise');
 const path = require('path');
+const { find } = require('lodash');
 const generator = require('./generator');
-const { getApiUrl, parseResponse, refreshDir } = require('./utils');
+const { parseResponse, refreshDir } = require('./utils');
 const { DEFAULT_DEST } = require('./constants');
+
+/**
+ * Gets the configuration for given type from the options.
+ * @param {String} type - Type to retrieve configuration from
+ * @param {Object} option - Import configuration passed down from the root function
+ * @return {Object}
+ */
+const getTypeOptions = (type, options) =>
+  find(options.contentTypes, (o) => o.type === type)
+
+/**
+ * Computes the destination for given type.
+ * @param {String} type - Type to computes destination for
+ * @param {Object} option - Import configuration passed down from the root function
+ * @return {String}
+ */
+const getTypeDestination = (type, options) => {
+  const typeOptions = getTypeOptions(type, options);
+  const base = options.dest || DEFAULT_DEST;
+  const sub = typeOptions.dest || type;
+  return path.join(base, sub);
+}
+
+/**
+ * Computes the API endpoint for given type.
+ * @param {String} type - Type to computes API endpoint for
+ * @param {Object} option - Import configuration passed down from the root function
+ * @return {String}
+ */
+const getTypeEndpoint = (type, options) => {
+  const { endpoint } = getTypeOptions(type, options);
+  return endpoint || (options.endpoint + '/' + type);
+}
+
+/**
+ * Merges the import configuration with the specific configuration from given
+ * type.
+ * @param {String} type - Type to merge configuration for
+ * @param {Object} option - Import configuration passed down from the root function
+ * @return {Object}
+ */
+const mergeConfig = (type, options) => {
+  const typeOptions = getTypeOptions(type, options);
+  const dest = getTypeDestination(type, options);
+  const endpoint = getTypeEndpoint(type, options);
+  return Object.assign({}, typeOptions, { dest, endpoint });
+}
 
 /**
  * Performs the API request and creates the files for given content type.
@@ -11,15 +59,9 @@ const { DEFAULT_DEST } = require('./constants');
  * @return {Promise}
  */
 const importType = (type, options) => {
-  const { endpoint, contentTypes, dest } = options;
-  const typeOptions = contentTypes[type];
-  const typeFolder = typeOptions.dest || type;
-  const config = Object.assign({}, typeOptions, {
-    dest: path.join(dest || DEFAULT_DEST, typeFolder),
-  });
-  const url = config.endpoint || getApiUrl(endpoint, type);
+  const config = mergeConfig(type, options);
 
-  return request(url)
+  return request(config.endpoint)
     .then((response) => refreshDir(config.dest)
       .then(() => parseResponse(response, type))
       .then((data) => generator(data, config))
@@ -32,10 +74,10 @@ const importType = (type, options) => {
  * @return {Promise}
  */
 const importAll = (options) => {
-  const types = Object.keys(options.contentTypes || {});
+  const { contentTypes = [] } = options;
 
-  return Promise.all(types.map((type) =>
-    importType(type, options)
+  return Promise.all(contentTypes.map((contentType) =>
+    importType(contentType.type, options)
   ));
 };
 
@@ -47,9 +89,9 @@ const importAll = (options) => {
  * @throws Throws an error if `options.contentTypes` is not defined.
  */
 const importer = (options = {}) => {
-  const types = Object.keys(options.contentTypes || {});
+  const { contentTypes = [] } = options;
 
-  if (types.length === 0) {
+  if (contentTypes.length === 0) {
     throw new Error('The `contentTypes` setting is mandatory.');
   }
 
