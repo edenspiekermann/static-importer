@@ -6,36 +6,22 @@ const { parseResponse, refreshDir } = require('./utils');
 const { DEFAULT_DEST } = require('./constants');
 
 /**
- * Gets the configuration for given type from the options.
- * @param {String} type - Type to retrieve configuration from
- * @param {Object} option - Import configuration passed down from the root function
- * @return {Object}
- */
-const getTypeOptions = (type, options) =>
-  find(options.contentTypes, (o) => o.type === type)
-
-/**
  * Computes the destination for given type.
- * @param {String} type - Type to computes destination for
- * @param {Object} option - Import configuration passed down from the root function
+ * @param {String} typeConfig - Type configuration
+ * @param {Object} config - Import configuration passed down from the root function
  * @return {String}
  */
-const getTypeDestination = (type, options) => {
-  const typeOptions = getTypeOptions(type, options);
-  const base = options.dest || DEFAULT_DEST;
-  const sub = typeOptions.dest || type;
-  return path.join(base, sub);
-}
+const getTypeDestination = ({ dest, type }, config) =>
+  path.join(config.dest || DEFAULT_DEST, dest || type);
 
 /**
  * Computes the API endpoint for given type.
- * @param {String} type - Type to computes API endpoint for
+ * @param {String} typeConfig - Type configuration
  * @param {Object} option - Import configuration passed down from the root function
  * @return {String}
  */
-const getTypeEndpoint = (type, options) => {
-  const { endpoint } = getTypeOptions(type, options);
-  return endpoint || (options.endpoint + '/' + type);
+const getTypeEndpoint = ({ endpoint, type }, config) => {
+  return endpoint || (config.endpoint + '/' + type);
 }
 
 /**
@@ -45,51 +31,50 @@ const getTypeEndpoint = (type, options) => {
  * @param {Object} option - Import configuration passed down from the root function
  * @return {Object}
  */
-const mergeConfig = (type, options) => {
-  const typeOptions = getTypeOptions(type, options);
-  const dest = getTypeDestination(type, options);
-  const endpoint = getTypeEndpoint(type, options);
-  return Object.assign({}, typeOptions, { dest, endpoint });
+const mergeConfig = (typeConfig, config) => {
+  const dest = getTypeDestination(typeConfig, config);
+  const endpoint = getTypeEndpoint(typeConfig, config);
+  return Object.assign({}, typeConfig, { dest, endpoint });
 }
 
 /**
  * Performs the API request and creates the files for given content type.
  * @param {String} type - The type of content to import (e.g. `posts`)
- * @param {Object} options - Main configuration object passed down from root function
+ * @param {Object} config - Main configuration object passed down from root function
  * @return {Promise}
  */
-const importType = (type, options) => {
-  const config = mergeConfig(type, options);
+const importType = (type, config) => {
+  const typeConfig = mergeConfig(find(config.contentTypes, { type }), config);
 
-  return request(config.endpoint)
-    .then((response) => refreshDir(config.dest)
-      .then(() => parseResponse(response, type))
-      .then((data) => generator(data, config))
+  return request(typeConfig.endpoint)
+    .then((response) => refreshDir(typeConfig.dest)
+      .then(() => parseResponse(response, typeConfig.type))
+      .then((data) => generator(data, typeConfig))
     )
 };
 
 /**
  * Performs the API requests and creates the files for all given content types.
- * @param {Object} options - Main configuration object passed down from root function
+ * @param {Object} config - Main configuration object passed down from root function
  * @return {Promise}
  */
-const importAll = (options) => {
-  const { contentTypes = [] } = options;
+const importAll = (config) => {
+  const { contentTypes = [] } = config;
 
-  return Promise.all(contentTypes.map((contentType) =>
-    importType(contentType.type, options)
+  return Promise.all(contentTypes.map((type) =>
+    importType(type.type, config)
   ));
 };
 
 /**
  * Returns a function to import all the content types or only a specific content
  * type.
- * @param {Object} options - Main configuration object passed down from root function
+ * @param {Object} config - Main configuration object passed down from root function
  * @return {Function}
- * @throws Throws an error if `options.contentTypes` is not defined.
+ * @throws Throws an error if `config.contentTypes` is not defined.
  */
-const importer = (options = {}) => {
-  const { contentTypes = [] } = options;
+const importer = (config = {}) => {
+  const { contentTypes = [] } = config;
 
   if (contentTypes.length === 0) {
     throw new Error('The `contentTypes` setting is mandatory.');
@@ -97,8 +82,8 @@ const importer = (options = {}) => {
 
   return (type) => {
     return type
-      ? importType(type, options)
-      : importAll(options);
+      ? importType(type, config)
+      : importAll(config);
   }
 }
 

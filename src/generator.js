@@ -41,8 +41,9 @@ const getFileContent = (entity, yfmSpec = {}) =>
  * @param {Object} config - Import configuration passed down from the root function
  * @return {String}
  */
-const getFilePath = (entity, config) =>
-  path.join(config.dest, getFileName(entity, config));
+const getFilePath = (entity, config) => {
+  return path.join(config.dest, getFileName(entity, config));
+}
 
 /**
  * Gets the name of the generated file.
