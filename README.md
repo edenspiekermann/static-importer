@@ -3,9 +3,9 @@
 This Node.js script helps importing data from the WordPress API and generating files to use in a static website configuration.
 
 ```js
-const wpImporter = require('wpImporter')
+const wpImporter = require('wpImporter');
 
-wpImporter(options)
+wpImporter(options);
 ```
 
 ## Options
@@ -15,7 +15,7 @@ wpImporter(options)
 ```js
 wpImporter({
   handle: 'mywordpresshandle'
-})
+});
 ```
 
 **`dest`** — The `dest` option is the directory in which files should be created. It is being wiped out, so make sure it does not contain any sensitive data. Defaults to `./wpimporter`.
@@ -23,7 +23,7 @@ wpImporter({
 ```js
 wpImporter({
   dest: './'
-})
+});
 ```
 
 **`contentTypes`** — The `contentTypes` option defines which content types should be imported and how. It is mandatory for any import to happen.
@@ -37,7 +37,7 @@ wpImporter({
       dest: '_posts'
     }
   }
-})
+});
 ```
 
 **`contentTypes{}.name`** — The `contentTypes{}.name` option defines how to compute the name of a file. It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item. Defaults to `{slug}.md`.
@@ -50,15 +50,15 @@ wpImporter({
     posts: {
       dest: '_posts',
       name: function (data) {
-        const date = moment(data.date)
-        const ext = 'md'
+        const date = moment(data.date);
+        const ext = 'md';
         return date.format('YYYY-MM-DD')
           + '-' + data.slug
-          + '.' + extension 
+          + '.' + extension ;
       }
     }
   }
-})
+});
 ```
 
 **`contentTypes{}.frontMatter`** — The `contentTypes{}.frontMatter` options defines the shape (and possible default values) of the YAML Front Matter for the file. Each key from this object will end up in the YAML front matter, knowing that if its value is:
@@ -68,7 +68,7 @@ wpImporter({
 
 
 ```js
-const moment = require('moment')
+const moment = require('moment');
 
 wpImporter({
   contentTypes: {
@@ -79,10 +79,10 @@ wpImporter({
         title: undefined,
         layout: 'post',
         author: function (data) {
-          return data.author.login
+          return data.author.login;
         }
       }
     }
   }
-})
+});
 ```
