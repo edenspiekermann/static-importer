@@ -3,9 +3,15 @@
 This Node.js script helps importing data from the WordPress API and generating files to use in a static website configuration.
 
 ```js
-const wpImporter = require('wpImporter');
+const wpImport = require('wpImporter')({
+  // Options…
+});
 
-wpImporter(options);
+// Import all content types
+wpImport();
+
+// Import a specific content type
+wpImport('posts');
 ```
 
 ## Options

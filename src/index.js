@@ -16,20 +16,7 @@ const _ = (options = {}) => {
     throw new Error('The `handle` setting is mandatory.');
   }
 
-  const types = Object.keys(options.contentTypes || {});
-
-  if (types.length === 0) {
-    console.log('You need to specify which `contentTypes` should be imported, and how.');
-  }
-
-  const _import = () =>
-    Promise.all(types.map((type) =>
-      importer(type, options)
-    ));
-
-  return {
-    import: _import
-  }
+  return importer(options);
 };
 
 module.exports = _;

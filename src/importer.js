@@ -5,13 +5,12 @@ const { getApiUrl, parseResponse, refreshDir } = require('./utils');
 const { DEFAULT_DEST } = require('./constants');
 
 /**
- * Performs the API request and creating the
- * files.
+ * Performs the API request and creates the files for given content type.
  * @param {String} type - The type of content to import (e.g. `posts`)
  * @param {Object} options - Main configuration object passed down from root function
  * @return {Promise}
  */
-const importer = (type, options = {}) => {
+const importType = (type, options) => {
   const { handle, contentTypes, dest } = options;
   const url = getApiUrl(handle, type);
   const typeOptions = contentTypes[type];
@@ -26,5 +25,39 @@ const importer = (type, options = {}) => {
       .then((data) => generator(data, config))
     )
 };
+
+/**
+ * Performs the API requests and creates the files for all given content types.
+ * @param {Object} options - Main configuration object passed down from root function
+ * @return {Promise}
+ */
+const importAll = (options) => {
+  const types = Object.keys(options.contentTypes || {});
+
+  return Promise.all(types.map((type) =>
+    importType(type, options)
+  ));
+};
+
+/**
+ * Returns a function to import all the content types or only a specific content
+ * type.
+ * @param {Object} options - Main configuration object passed down from root function
+ * @return {Function}
+ * @throws Throws an error if `options.contentTypes` is not defined.
+ */
+const importer = (options = {}) => {
+  const types = Object.keys(options.contentTypes || {});
+
+  if (types.length === 0) {
+    throw new Error('The `contentTypes` setting is mandatory.');
+  }
+
+  return (type) => {
+    return type
+      ? importType(type, options)
+      : importAll(options);
+  }
+}
 
 module.exports = importer;
