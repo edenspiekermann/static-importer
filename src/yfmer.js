@@ -16,12 +16,12 @@ const generateFrontMatter = (data) =>
     return acc;
   }, []);
 
-const pickValues = (object, spec) =>
+const pickValues = (object = {}, spec = {}) =>
   Object.keys(spec).reduce((acc, key) => {
     const value = spec[key]
 
     if (!value) {
-      acc[key] = get(object, key)
+      acc[key] = get(object, key, '')
     } else if (typeof value === 'function') {
       acc[key] = value(object)
     } else {
