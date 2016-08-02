@@ -46,6 +46,19 @@ staticImporter({
 });
 ```
 
+
+**`contentTypes{}.endpoint`** — The `contentTypes{}.endpoint` option overwrites the base endpoint for the type. Defaults to base `endpoint` joined with content name with a `/`.
+
+```js
+staticImporter({
+  contentTypes: {
+    posts: {
+      endpoint: 'https://something.different.com/'
+    }
+  }
+});
+```
+
 **`contentTypes{}.name`** — The `contentTypes{}.name` option defines how to compute the name of a file. It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item. Defaults to `{slug}.md`.
 
 ```js

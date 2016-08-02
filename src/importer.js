@@ -12,12 +12,12 @@ const { DEFAULT_DEST } = require('./constants');
  */
 const importType = (type, options) => {
   const { endpoint, contentTypes, dest } = options;
-  const url = getApiUrl(endpoint, type);
   const typeOptions = contentTypes[type];
   const typeFolder = typeOptions.dest || type;
   const config = Object.assign({}, typeOptions, {
-    dest: path.join(dest || DEFAULT_DEST, typeFolder)
+    dest: path.join(dest || DEFAULT_DEST, typeFolder),
   });
+  const url = config.endpoint || getApiUrl(endpoint, type);
 
   return request(url)
     .then((response) => refreshDir(config.dest)
