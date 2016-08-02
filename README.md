@@ -84,7 +84,7 @@ importer({
 });
 ```
 
-**`contentTypes{}.frontMatter`** — The `contentTypes{}.frontMatter` options defines the shape (and possible default values) of the YAML Front Matter for the file. Each key from this object will end up in the YAML front matter, knowing that if its value is:
+**`contentTypes{}.yfm`** — The `contentTypes{}.yfm` options defines the shape (and possible default values) of the YAML Front Matter for the file. Each key from this object will end up in the YAML front matter, knowing that if its value is:
 - falsey (e.g. `undefined`), the resulting value will be looked up in the API response based on the key name;
 - a string (e.g. `foo`), the resulting value will be set to this same string.
 - a function (exposing the API response), the resulting value will be the returned value from the function.
@@ -98,7 +98,7 @@ importer({
     posts: {
       dest: '_posts',
       name: '{slug}.md',
-      frontMatter: {
+      yfm: {
         title: undefined,
         layout: 'post',
         author: function (data) {

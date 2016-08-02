@@ -22,18 +22,18 @@ const createFiles = (entities, config) =>
 const createFile = (entity, config) =>
   writeFile(
     getFilePath(entity, config),
-    getFileContent(entity, config.frontMatter)
+    getFileContent(entity, config.yfm)
   );
 
 /**
  * Gets the contents to be written in the generated file, including the YAML
  * Front Matter.
  * @param {Object} entity - Entity from the API response
- * @param {Object} [frontMatterSpec = {}] - Front matter specification for the type
+ * @param {Object} [yfmSpec = {}] - Front matter specification for the type
  * @return {String}
  */
-const getFileContent = (entity, frontMatterSpec = {}) =>
-  yfmer(entity, frontMatterSpec) + entity.content;
+const getFileContent = (entity, yfmSpec = {}) =>
+  yfmer(entity, yfmSpec) + entity.content;
 
 /**
  * Gets the destination for the generated file.
