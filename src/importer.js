@@ -12,24 +12,23 @@ const importContent = (type, options) => {
     dest: path.join(baseDest, config.dest || type)
   });
 
-  request(url)
+  return request(url)
     .then((response) => refreshDir(config.dest)
       .then(() => parseResponse(response, type))
       .then((data) => generator(data, config))
     )
-    .catch((err) => console.log(err));
 }
 
-const importer = (options) => {
+const importer = (options = {}) => {
   if (!options.handle) {
     throw new Error('The `handle` setting is mandatory.');
   }
 
-  const types = Object.keys(options.contentTypes) || [];
+  const types = Object.keys(options.contentTypes || {});
 
-  types.forEach((type) => {
-    importContent(type, options);
-  });
+  return Promise.all(types.map((type) =>
+    importContent(type, options))
+  );
 }
 
 module.exports = importer;

@@ -7,4 +7,10 @@ describe('The importer module', () => {
   it('should throw if no `handle` option given', () => {
     assert.throws(() => importer(), Error);
   });
+
+  it('should return a Promise', () => {
+    const actual = typeof importer({ handle: 'foo' }).then
+    const expect = 'function'
+    assert.equal(actual, expect);
+  });
 });
