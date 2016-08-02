@@ -1,4 +1,4 @@
-const DEFAULT_DEST = './wpimporter';
+const DEFAULT_DEST = __dirname;
 const DEFAULT_NAME = '{slug}.md';
 const FRONT_MATTER_DELIMITER = '---';
 

@@ -4,29 +4,60 @@ const yfmer = require('./yfmer');
 const { template } = require('./utils');
 const { DEFAULT_NAME } = require('./constants');
 
-const createFiles = (data, config) =>
-  Promise.all(data.map((item) => createFile(item, config)));
+/**
+ * Creates files based on response entities and global configuration.
+ * @param {Object[]} entities - Entities from the API response
+ * @param {Object} config - Import configuration passed down from the root function
+ * @return {Promise}
+ */
+const createFiles = (entities, config) =>
+  Promise.all(entities.map((item) => createFile(item, config)));
 
-const createFile = (data, config) =>
+/**
+ * Create a file based on response entity and global configuration.
+ * @param {Object} entity - Entity from the API response
+ * @param {Object} config - Import configuration passed down from the root function
+ * @return {Promise}
+ */
+const createFile = (entity, config) =>
   writeFile(
-    getFilePath(data, config),
-    getFileContent(data, config.frontMatter)
+    getFilePath(entity, config),
+    getFileContent(entity, config.frontMatter)
   );
 
-const getFileContent = (data, frontMatter = {}) =>
-  yfmer(data, frontMatter) + data.content;
+/**
+ * Gets the contents to be written in the generated file, including the YAML
+ * Front Matter.
+ * @param {Object} entity - Entity from the API response
+ * @param {Object} [frontMatterSpec = {}] - Front matter specification for the type
+ * @return {String}
+ */
+const getFileContent = (entity, frontMatterSpec = {}) =>
+  yfmer(entity, frontMatterSpec) + entity.content;
 
-const getFilePath = (data, config) =>
-  path.join(config.dest, getFileName(data, config));
+/**
+ * Gets the destination for the generated file.
+ * @param {Object} entity - Entity from the API response
+ * @param {Object} config - Import configuration passed down from the root function
+ * @return {String}
+ */
+const getFilePath = (entity, config) =>
+  path.join(config.dest, getFileName(entity, config));
 
-const getFileName = (data, config) => {
+/**
+ * Gets the name of the generated file.
+ * @param {Object} entity - Entity from the API response
+ * @param {Object} config - Import configuration passed down from the root function
+ * @return {String}
+ */
+const getFileName = (entity, config) => {
   const name = config.name || DEFAULT_NAME;
 
   if (typeof name === 'function') {
-    return name(data);
+    return name(entity);
   }
 
-  return template(name, data);
+  return template(name, entity);
 }
 
 module.exports = createFiles;
