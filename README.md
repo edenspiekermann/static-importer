@@ -1,33 +1,33 @@
-# WordPress to Static importer
+# JSON API to Static importer
 
-This Node.js script helps importing data from the WordPress API and generating files to use in a static website configuration.
+This Node.js script helps importing data a JSON API and generating files to use in a static website setup.
 
 ```js
-const wpImport = require('wpImporter')({
+const staticImporter = require('static-importer')({
   // Options…
 });
 
 // Import all content types
-wpImport();
+staticImporter();
 
 // Import a specific content type
-wpImport('posts');
+staticImporter('posts');
 ```
 
 ## Options
 
-**`handle`** — The `handle` option is the name of your WordPress website. It is being used to retrieve the API URL, and perform the requests to the API. It is mandatory.
+**`endpoint`** — The `endpoint` option is the API endpoint (WordPress, Contentful…). It is mandatory as it is being used to perform the requests to the API. Type-specific endpoints are computed by appending the type (e.g. `posts`) to the end of this URL.
 
 ```js
-wpImporter({
-  handle: 'mywordpresshandle'
+staticImporter({
+  endpoint: 'https://public-api.wordpress.com/rest/v1.1/mywordpresshandle.wordpress.com'
 });
 ```
 
-**`dest`** — The `dest` option is the directory in which files should be created. It is being wiped out, so make sure it does not contain any sensitive data. Defaults to `./wpimporter`.
+**`dest`** — The `dest` option is the directory in which files should be created. It is being wiped out, so make sure it does not contain any sensitive data. Defaults to `__dirname`.
 
 ```js
-wpImporter({
+staticImporter({
   dest: './'
 });
 ```
@@ -37,7 +37,7 @@ wpImporter({
 **`contentTypes{}.dest`** — The `contentTypes{}.dest` option defines where to output files for the currenty content type in the top-level `dest` directory option. Defaults to the name of the type (e.g. `posts`).
 
 ```js
-wpImporter({
+staticImporter({
   contentTypes: {
     posts: {
       dest: '_posts'
@@ -51,7 +51,7 @@ wpImporter({
 ```js
 const moment = require('moment')
 
-wpImporter({
+staticImporter({
   contentTypes: {
     posts: {
       dest: '_posts',
@@ -76,7 +76,7 @@ wpImporter({
 ```js
 const moment = require('moment');
 
-wpImporter({
+staticImporter({
   contentTypes: {
     posts: {
       dest: '_posts',

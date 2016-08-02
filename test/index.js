@@ -1,15 +1,15 @@
 const assert = require('assert');
 const main = require('../src');
 
-const m = main({ handle: 'foo', contentTypes: { foo: 'bar' } });
+const m = main({ endpoint: 'foo', contentTypes: { foo: 'bar' } });
 
 describe('The main module', () => {
-  it('should throw if no `handle` option given', () => {
+  it('should throw if no `endpoint` option given', () => {
     assert.throws(() => main(), Error);
   });
 
   it('should throw if no `contentTypes` option given', () => {
-    assert.throws(() => main({ handle: 'foo' }), Error);
+    assert.throws(() => main({ endpoint: 'foo' }), Error);
   });
 
   it('should return a function', () => {

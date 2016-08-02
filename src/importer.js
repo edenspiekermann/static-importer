@@ -11,8 +11,8 @@ const { DEFAULT_DEST } = require('./constants');
  * @return {Promise}
  */
 const importType = (type, options) => {
-  const { handle, contentTypes, dest } = options;
-  const url = getApiUrl(handle, type);
+  const { endpoint, contentTypes, dest } = options;
+  const url = getApiUrl(endpoint, type);
   const typeOptions = contentTypes[type];
   const typeFolder = typeOptions.dest || type;
   const config = Object.assign({}, typeOptions, {
