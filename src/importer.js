@@ -3,7 +3,7 @@ const path = require('path');
 const generator = require('./generator');
 const { getApiUrl, parseResponse, refreshDir } = require('./utils');
 
-const importContent = (type, options) => {
+const importer = (type, options) => {
   const url = getApiUrl(options.handle, type);
   const config = options.contentTypes[type];
   const baseDest = options.dest || './wpimporter';
@@ -17,23 +17,6 @@ const importContent = (type, options) => {
       .then(() => parseResponse(response, type))
       .then((data) => generator(data, config))
     )
-}
-
-const importer = (options = {}) => {
-  if (!options.handle) {
-    throw new Error('The `handle` setting is mandatory.');
-  }
-
-  const types = Object.keys(options.contentTypes || {});
-
-  if (types.length === 0) {
-    console.log('You need to specify which `contentTypes` should be imported, and how.');
-    return Promise.resolve();
-  }
-
-  return Promise.all(types.map((type) =>
-    importContent(type, options))
-  );
-}
+};
 
 module.exports = importer;
