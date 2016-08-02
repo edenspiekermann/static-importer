@@ -21,6 +21,10 @@ const importContent = (type, options) => {
 }
 
 const importer = (options) => {
+  if (!options.handle) {
+    throw new Error('The `handle` setting is mandatory.');
+  }
+
   const types = Object.keys(options.contentTypes) || [];
 
   types.forEach((type) => {
