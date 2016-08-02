@@ -5,12 +5,13 @@ const { getApiUrl, parseResponse, refreshDir } = require('./utils');
 const { DEFAULT_DEST } = require('./constants');
 
 const importer = (type, options) => {
-  const url = getApiUrl(options.handle, type);
-  const typeOptions = options.contentTypes[type];
-  const config = Object.assign({},
-    typeOptions,
-    { dest: path.join(options.dest, typeOptions.dest || type) }
-  );
+  const { handle, contentTypes, dest } = options;
+  const url = getApiUrl(handle, type);
+  const typeOptions = contentTypes[type];
+  const typeFolder = typeOptions.dest || type;
+  const config = Object.assign({}, typeOptions, {
+    dest: path.join(dest, typeFolder)
+  });
 
   return request(url)
     .then((response) => refreshDir(config.dest)

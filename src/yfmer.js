@@ -1,7 +1,6 @@
 const { compose } = require('lodash/fp');
 const { get } = require('lodash');
-
-const FRONT_MATTER_DELIMITER = '---';
+const { FRONT_MATTER_DELIMITER } = require('./constants');
 
 const wrapFrontMatter = (frontMatter) =>
   [FRONT_MATTER_DELIMITER]
@@ -10,7 +9,7 @@ const wrapFrontMatter = (frontMatter) =>
     .concat('')
     .join('\n');
 
-const generateFrontMatter = (data) =>
+const generateFrontMatter = (data = {}) =>
   Object.keys(data).reduce((acc, key) => {
     acc.push(key + ': ' + data[key]);
     return acc;
@@ -31,12 +30,8 @@ const pickValues = (object = {}, spec = {}) =>
     return acc;
   }, {});
 
-const getFrontMatter = compose(
+module.exports = compose(
   wrapFrontMatter,
   generateFrontMatter,
   pickValues
 );
-
-const yfmer = getFrontMatter;
-
-module.exports = yfmer;
