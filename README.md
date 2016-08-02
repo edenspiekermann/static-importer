@@ -3,15 +3,19 @@
 This Node.js script helps importing data a JSON API and generating files to use in a static website setup.
 
 ```js
-const staticImporter = require('static-importer')({
+const importer = require('static-importer')({
   // Options…
 });
 
 // Import all content types
-staticImporter();
+importer()
+  .then(() => console.log('All data successfully imported.'))
+  .catch((err) => console.log('Something went wrong: ', err));
 
 // Import a specific content type
-staticImporter('posts');
+importer('posts')
+  .then(() => console.log('All posts successfully imported.'))
+  .catch((err) => console.log('Something went wrong: ', err));
 ```
 
 ## Options
@@ -19,7 +23,7 @@ staticImporter('posts');
 **`endpoint`** — The `endpoint` option is the API endpoint (WordPress, Contentful…). It is mandatory as it is being used to perform the requests to the API. Type-specific endpoints are computed by appending the type (e.g. `posts`) to the end of this URL.
 
 ```js
-staticImporter({
+importer({
   endpoint: 'https://public-api.wordpress.com/rest/v1.1/mywordpresshandle.wordpress.com'
 });
 ```
@@ -27,7 +31,7 @@ staticImporter({
 **`dest`** — The `dest` option is the directory in which files should be created. It is being wiped out, so make sure it does not contain any sensitive data. Defaults to `__dirname`.
 
 ```js
-staticImporter({
+importer({
   dest: './'
 });
 ```
@@ -37,7 +41,7 @@ staticImporter({
 **`contentTypes{}.dest`** — The `contentTypes{}.dest` option defines where to output files for the currenty content type in the top-level `dest` directory option. Defaults to the name of the type (e.g. `posts`).
 
 ```js
-staticImporter({
+importer({
   contentTypes: {
     posts: {
       dest: '_posts'
@@ -50,7 +54,7 @@ staticImporter({
 **`contentTypes{}.endpoint`** — The `contentTypes{}.endpoint` option overwrites the base endpoint for the type. Defaults to base `endpoint` joined with content name with a `/`.
 
 ```js
-staticImporter({
+importer({
   contentTypes: {
     posts: {
       endpoint: 'https://something.different.com/'
@@ -64,7 +68,7 @@ staticImporter({
 ```js
 const moment = require('moment')
 
-staticImporter({
+importer({
   contentTypes: {
     posts: {
       dest: '_posts',
@@ -89,7 +93,7 @@ staticImporter({
 ```js
 const moment = require('moment');
 
-staticImporter({
+importer({
   contentTypes: {
     posts: {
       dest: '_posts',
