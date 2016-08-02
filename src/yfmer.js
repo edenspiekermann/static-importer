@@ -1,7 +1,7 @@
-const { compose } = require('lodash/fp')
-const { get } = require('lodash')
+const { compose } = require('lodash/fp');
+const { get } = require('lodash');
 
-const FRONT_MATTER_DELIMITER = '---'
+const FRONT_MATTER_DELIMITER = '---';
 
 const wrapFrontMatter = (frontMatter) =>
   [FRONT_MATTER_DELIMITER]
@@ -18,14 +18,14 @@ const generateFrontMatter = (data) =>
 
 const pickValues = (object = {}, spec = {}) =>
   Object.keys(spec).reduce((acc, key) => {
-    const value = spec[key]
+    const value = spec[key];
 
     if (!value) {
-      acc[key] = get(object, key, '')
+      acc[key] = get(object, key, '');
     } else if (typeof value === 'function') {
-      acc[key] = value(object)
+      acc[key] = value(object);
     } else {
-      acc[key] = value
+      acc[key] = value;
     }
 
     return acc;
@@ -35,8 +35,8 @@ const getFrontMatter = compose(
   wrapFrontMatter,
   generateFrontMatter,
   pickValues
-)
+);
 
-const yfmer = getFrontMatter
+const yfmer = getFrontMatter;
 
-module.exports = yfmer
+module.exports = yfmer;

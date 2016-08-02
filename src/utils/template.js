@@ -1,6 +1,6 @@
 const template = (input, values = {}) =>
   Object.keys(values).reduce((acc, key) =>
     acc.replace(new RegExp('{' + key + '}', 'g'), values[key])
-  , input)
+  , input);
 
-module.exports = template
+module.exports = template;

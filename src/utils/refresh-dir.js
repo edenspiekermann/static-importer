@@ -1,14 +1,14 @@
-const { remove, ensureDir } = require('fs-promise')
+const { remove, ensureDir } = require('fs-promise');
 
 const deleteDir = (dir) =>
-  remove(dir)
+  remove(dir);
 
 const createDir = (dir) =>
-  ensureDir(dir)
+  ensureDir(dir);
 
 const refreshDir = (dir) =>
   deleteDir(dir)
     .then(() => createDir(dir))
-    .then(() => dir)
+    .then(() => dir);
 
-module.exports = refreshDir
+module.exports = refreshDir;
