@@ -1,4 +1,4 @@
-const importer = require('./importer');
+const importer = require('./importer')
 
 const _ = (options = {}) => {
   if (!options.handle) {
@@ -13,8 +13,8 @@ const _ = (options = {}) => {
   }
 
   return Promise.all(types.map((type) =>
-    importer(type, options))
-  );
+    importer(type, options)
+  ));
 };
 
 module.exports = _;
