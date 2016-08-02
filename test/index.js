@@ -8,8 +8,8 @@ describe('The main module', () => {
     assert.throws(() => main(), Error);
   });
 
-  it('should return a Promise', () => {
-    const actual = typeof main({ handle: 'foo' }).then
+  it('should return an object with an import key', () => {
+    const actual = typeof main({ handle: 'foo' }).import
     const expect = 'function'
     assert.equal(actual, expect);
   });
