@@ -2,8 +2,7 @@ const { writeFile } = require('fs-promise');
 const path = require('path');
 const yfmer = require('./yfmer');
 const { template } = require('./utils');
-
-const DEFAULT_NAME = '{slug}.md';
+const { DEFAULT_NAME } = require('./constants');
 
 const createFiles = (data, config) =>
   Promise.all(data.map((item) => createFile(item, config)));
