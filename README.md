@@ -20,7 +20,11 @@ importer('posts')
 
 ## Options
 
-**`contentTypes`** — The `contentTypes` mandatory option defines which content types should be imported and how.
+* **Name**: `contentTypes`
+* **Required**: yes
+* **Type**: array of objects
+* **Defaults**: —
+* **Description**: Content types that should be imported and their configuration.
 
 ```js
 importer({
@@ -31,7 +35,11 @@ importer({
 });
 ```
 
-**`<contentType>.name`** — The `<contentType>.name` mandatory option defines the name of the content type. It acts as a unique identifier for each type.
+* **Name**: `<contentType>.name`
+* **Required**: yes
+* **Type**: string
+* **Defaults**: —
+* **Description**: Unique name for the content type.
 
 ```js
 {
@@ -39,57 +47,66 @@ importer({
 }
 ```
 
-**`<contentType>.endpoint`** — The `<contentType>.endpoint` mandatory option determines which API endpoint will be requested for the current type.
+* **Name**: `<contentType>.endpoint`
+* **Required**: yes
+* **Type**: URL
+* **Defaults**: —
+* **Description**: API endpoint for the content type.
 
 ```js
 {
-  name: 'posts',
   endpoint: 'https://api.example.com/1.1/posts'
 }
 ```
 
-**`<contentType>.dest`** — The `<contentType>.dest` option defines where to output files for the content type. Defaults to `./.import`.
+* **Name**: `<contentType>.dest`
+* **Required**: no
+* **Type**: string
+* **Defaults**: `./.import`
+* **Description**: Where to output files for the content type.
 
 ```js
 {
-  name: 'posts',
-  endpoint: 'https://api.example.com/1.1/posts',
   dest: '_posts'
 }
 ```
 
-
-**`<contentType>.filename`** — The `<contentType>.filename` option defines the filename pattern to output files for the content type.
-It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item. Defaults to `{slug}.md`.
+* **Name**: `<contentType>.filename`
+* **Required**: no
+* **Type**: string or function
+* **Defaults**: `{slug}.md`
+* **Description**: Pattern to name files for the content type. If specified as a string, tokens wrapped in brackets will be replaced with their respective value from the API response. If specified as a function, it receives the API response as only parameter.
 
 ```js
 {
-  name: 'posts',
-  endpoint: 'https://api.example.com/1.1/posts',
   filename: ({ date, slug }) =>
     `${moment(date).format('YYYY-MM-DD')}-${slug}.md`
 }
 ```
 
-**`<contentType>.responsePath`** — The `<contentType>.responsePath` option defines the path to the relevant collection in the API response. Any unfound, falsey or `true` value will result into using the root of the response. Defaults to `null`.
+* **Name**: `<contentType>.responsePath`
+* **Required**: no
+* **Type**: string
+* **Defaults**: `null` 
+* **Description**: Where to look for the relevant data in the API response; useful when the API returns more than just the data. Any falsey value will use the response as a whole.
 
 ```js
 {
-  name: 'posts',
-  endpoint: 'https://api.example.com/1.1/posts',
   responsePath: 'data.posts'
 }
 ```
 
-**`<contentType>.yfm`** — The `<contentType>.yfm` options defines the shape (and possible default values) of the YAML Front Matter for the file. Each key from this object will end up in the YAML front matter, knowing that if its value is:
-- falsey or `true` (e.g. `undefined`), the resulting value will be looked up in the API response based on the key name;
-- a string (e.g. `foo`), the resulting value will be set to this same string.
-- a function (exposing the API response), the resulting value will be the returned value from the function.
+* **Name**: `<contentType>.yfm`
+* **Required**: no
+* **Type**: object
+* **Defaults**: —
+* **Description**: Specification for the YAML Front Matter of generated files from the content type. Each key will end up in the YAML Front Matter, knowing that if its value is:
+  - `true` or falsey (e.g. `undefined`), the resulting value will be looked up in the API response based on the key name;
+  - a string (e.g. `foo`), the resulting value will be set to this same string.
+  - a function (exposing the API response), the resulting value will be the returned value from the function.
 
 ```js
 {
-  name: 'posts',
-  endpoint: 'https://api.example.com/1.1/posts',
   yfm: {
     title: true,
     layout: 'post',
@@ -98,12 +115,14 @@ It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function expos
 }
 ```
 
-**`<contentType>.contentPath`** — The `<contentType>.contentPath` option defines the path to the page content in the API response. It accepts a string or a function receiving the API response. Defaults to `content`.
+* **Name**: `<contentType>.contentPath`
+* **Required**: no
+* **Type**: string or function
+* **Defaults**: `content`
+* **Description**: Where to look for the page content in the API response. If specified as a function, it receives the API response as only parameter.
 
 ```js
 {
-  name: 'posts',
-  endpoint: 'https://api.example.com/1.1/posts',
   contentPath: (data) => marked(data.markdown)
 }
 ```
