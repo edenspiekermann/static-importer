@@ -1,22 +1,45 @@
 const importer = require('./importer')
 
 /**
- * Prepares importer with given configuration and returns a function to import
- * asked content types from the API.
- * @access public
+ * Validates the initialisation options.
  * @param {Object} options - Configuration object
- * @param {String} options.endpoint - API endpoint
- * @param {String} [options.dest = __dirname] - Destination base folder (then dispatched by content types)
- * @param {Object[]} options.contentTypes - Content types to be imported and their configuration
- * @throws Throws an error if `options.endpoint` is not defined.
- * @return {Function}
+ * @return {Object}
+ * @throws Throws an error if some content types do not have an endpoint
+ * @throws Throws an error if some content types do not have a name
  */
-const _ = (options = {}) => {
-  if (!options.endpoint) {
-    throw new Error('The `endpoint` setting is mandatory.');
+const validateOptions = (options) => {
+  const { contentTypes } = options;
+
+  if (!contentTypes) {
+    throw new Error('The `contentTypes` setting is mandatory.');
   }
 
-  return importer(options);
+  const haveName = contentTypes.every(t => t.name);
+
+  if (!haveName) {
+    throw new Error('Some content types do not have a `name`.')
+  }
+
+  const haveEndpoint = contentTypes.every(t => t.endpoint);
+
+  if (!haveEndpoint) {
+    throw new Error('Some content types do not have an `endpoint`.')
+  }
+
+  return options;
+}
+
+/**
+ * Prepares importer with given configuration and returns a function to import
+ * asked (or all) content types from the API.
+ * @access public
+ * @param {Object} options - Configuration object
+ * @param {Object[]} options.contentTypes - Content types configuration
+ * @return {Function}
+ */
+const staticImporter = (options = {}) => {
+  const { contentTypes } = validateOptions(options);
+  return importer(contentTypes);
 };
 
-module.exports = _;
+module.exports = staticImporter;

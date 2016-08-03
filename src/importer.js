@@ -6,84 +6,47 @@ const { parseResponse, refreshDir } = require('./utils');
 const { DEFAULT_DEST } = require('./constants');
 
 /**
- * Computes the destination for given type.
- * @param {String} typeConfig - Type configuration
- * @param {Object} config - Import configuration passed down from the root function
- * @return {String}
+ * Performs the API request and creates the files for given content type.
+ * @param {String} type - The configuration from the type of content to import
+ * @return {Promise}
  */
-const getTypeDestination = ({ dest, type }, config) =>
-  path.join(config.dest || DEFAULT_DEST, dest || type);
+const importType = (type) =>
+  request(type.endpoint)
+    .then((response) => refreshDir(path.dirname(type.dest || DEFAULT_DEST))
+      .then(() => parseResponse(response, type.name))
+      .then((data) => generator(data, type))
+    );
 
 /**
- * Computes the API endpoint for given type.
- * @param {String} typeConfig - Type configuration
- * @param {Object} option - Import configuration passed down from the root function
- * @return {String}
+ * Performs the API requests and creates the files for all content types.
+ * @param {Object[]} types - Content types configuration
+ * @return {Promise}
  */
-const getTypeEndpoint = ({ endpoint, type }, config) => {
-  return endpoint || (config.endpoint + '/' + type);
-}
+const importAll = (types) =>
+  Promise.all(types.map(importType));
 
 /**
- * Merges the import configuration with the specific configuration from given
- * type.
- * @param {String} type - Type to merge configuration for
- * @param {Object} option - Import configuration passed down from the root function
+ * Finds the configuration of a type in the array of settings from a type name.
+ * @param {Object[]} types - Content types configuration
+ * @param {String} name - Type name to retrieve configuration from
  * @return {Object}
  */
-const mergeConfig = (typeConfig, config) => {
-  const dest = getTypeDestination(typeConfig, config);
-  const endpoint = getTypeEndpoint(typeConfig, config);
-  return Object.assign({}, typeConfig, { dest, endpoint });
-}
-
-/**
- * Performs the API request and creates the files for given content type.
- * @param {String} type - The type of content to import (e.g. `posts`)
- * @param {Object} config - Main configuration object passed down from root function
- * @return {Promise}
- */
-const importType = (type, config) => {
-  const typeConfig = mergeConfig(find(config.contentTypes, { type }), config);
-
-  return request(typeConfig.endpoint)
-    .then((response) => refreshDir(typeConfig.dest)
-      .then(() => parseResponse(response, typeConfig.type))
-      .then((data) => generator(data, typeConfig))
-    )
-};
-
-/**
- * Performs the API requests and creates the files for all given content types.
- * @param {Object} config - Main configuration object passed down from root function
- * @return {Promise}
- */
-const importAll = (config) => {
-  const { contentTypes = [] } = config;
-
-  return Promise.all(contentTypes.map((type) =>
-    importType(type.type, config)
-  ));
-};
+const findTypeByName = (types, name) =>
+  find(types, (t) => t.name === name);
 
 /**
  * Returns a function to import all the content types or only a specific content
  * type.
- * @param {Object} config - Main configuration object passed down from root function
+ * @param {Object[]} types - Content types configuration
  * @return {Function}
- * @throws Throws an error if `config.contentTypes` is not defined.
  */
-const importer = (config = {}) => {
-  const { contentTypes = [] } = config;
-
-  if (contentTypes.length === 0) {
-    throw new Error('The `contentTypes` setting is mandatory.');
-  }
-
+const importer = (types) => {
   return (type) => {
+    const config = findTypeByName(types, type);
+
     return type
-      ? importType(type, config)
-      : importAll(config);
+      ? importType(config)
+      : importAll(types);
   }
 }
 

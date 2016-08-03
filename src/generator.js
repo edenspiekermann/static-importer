@@ -2,21 +2,21 @@ const { writeFile } = require('fs-promise');
 const path = require('path');
 const yfmer = require('./yfmer');
 const { template } = require('./utils');
-const { DEFAULT_NAME } = require('./constants');
+const { DEFAULT_DEST } = require('./constants');
 
 /**
  * Creates files based on response entities and global configuration.
  * @param {Object[]} entities - Entities from the API response
- * @param {Object} config - Import configuration passed down from the root function
+ * @param {Object} config - Type configuration
  * @return {Promise}
  */
 const createFiles = (entities, config) =>
-  Promise.all(entities.map((item) => createFile(item, config)));
+  Promise.all(entities.map((entity) => createFile(entity, config)));
 
 /**
  * Create a file based on response entity and global configuration.
  * @param {Object} entity - Entity from the API response
- * @param {Object} config - Import configuration passed down from the root function
+ * @param {Object} config - Type configuration
  * @return {Promise}
  */
 const createFile = (entity, config) =>
@@ -38,27 +38,17 @@ const getFileContent = (entity, yfmSpec = {}) =>
 /**
  * Gets the destination for the generated file.
  * @param {Object} entity - Entity from the API response
- * @param {Object} config - Import configuration passed down from the root function
+ * @param {Object} config - Type configuration
  * @return {String}
  */
 const getFilePath = (entity, config) => {
-  return path.join(config.dest, getFileName(entity, config));
-}
+  const dest = config.dest || DEFAULT_DEST;
 
-/**
- * Gets the name of the generated file.
- * @param {Object} entity - Entity from the API response
- * @param {Object} config - Import configuration passed down from the root function
- * @return {String}
- */
-const getFileName = (entity, config) => {
-  const name = config.name || DEFAULT_NAME;
-
-  if (typeof name === 'function') {
-    return name(entity);
+  if (typeof dest === 'function') {
+    return dest(entity);
   }
 
-  return template(name, entity);
+  return template(dest, entity);
 }
 
 module.exports = createFiles;

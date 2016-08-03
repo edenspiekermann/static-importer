@@ -1,6 +1,6 @@
 # JSON API to Static importer
 
-This Node.js script helps importing data a JSON API and generating files to use in a static website setup.
+This Node.js script helps importing data from a JSON API and generating files to use in a static website setup.
 
 ```js
 const importer = require('static-importer')({
@@ -20,23 +20,7 @@ importer('posts')
 
 ## Options
 
-**`endpoint`** — The `endpoint` option is the API endpoint (WordPress, Contentful…). It is mandatory as it is being used to perform the requests to the API. Type-specific endpoints are computed by appending the type (e.g. `posts`) to the end of this URL.
-
-```js
-importer({
-  endpoint: 'https://public-api.wordpress.com/rest/v1.1/mywordpresshandle.wordpress.com'
-});
-```
-
-**`dest`** — The `dest` option is the directory in which files should be created. It is being wiped out, so make sure it does not contain any sensitive data. Defaults to `__dirname`.
-
-```js
-importer({
-  dest: './'
-});
-```
-
-**`contentTypes`** — The `contentTypes` option defines which content types should be imported and how. It is mandatory for any import to happen.
+**`contentTypes`** — The `contentTypes` mandatory option defines which content types should be imported and how.
 
 ```js
 importer({
@@ -47,39 +31,30 @@ importer({
 });
 ```
 
-**`<contentType>.type`** — The `<contentType>.type` option defines the name of the content type. It is mandatory for it not to be considered invalid and discarded.
+**`<contentType>.name`** — The `<contentType>.name` option defines the name of the content type. It is mandatory for it not to be considered invalid and discarded.
 
 ```js
 {
-  type: 'posts'
+  name: 'posts'
 }
 ```
 
-**`<contentType>.dest`** — The `<contentType>.dest` option defines where to output files for the currenty content type in the top-level `dest` directory option. Defaults to the name of the type (e.g. `posts`).
+**`<contentType>.endpoint`** — The `<contentType>.endpoint` mandatory option determines which API endpoint will be requested for the current type.
 
 ```js
 {
-  type: 'posts',
-  dest: '_posts'
+  name: 'posts',
+  endpoint: 'https://api.example.com/1.1/posts'
 }
 ```
 
-
-**`<contentType>.endpoint`** — The `<contentType>.endpoint` option overwrites the base endpoint for the type. Defaults to base `endpoint` joined with content name with a `/`.
-
-```js
-{
-  type: 'posts',
-  endpoint: 'https://something.different.com/'
-}
-```
-
-**`<contentType>.name`** — The `<contentType>.name` option defines how to compute the name of a file. It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item. Defaults to `{slug}.md`.
+**`<contentType>.dest`** — The `<contentType>.dest` option defines where to output files and under which name for the currenty content type. Defaults to `./.import/{slug}.md`. It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item.
 
 ```js
 {
-  type: 'posts',
-  name: ({ date, slug }) =>
+  name: 'posts',
+  endpoint: 'https://api.example.com/1.1/posts',
+  dest: ({ date, slug }) =>
     moment(date).format('YYYY-MM-DD') + '-' + slug + '.md'
 }
 ```
@@ -91,7 +66,8 @@ importer({
 
 ```js
 {
-  type: 'posts',
+  name: 'posts',
+  endpoint: 'https://api.example.com/1.1/posts',
   yfm: {
     title: undefined,
     layout: 'post',
