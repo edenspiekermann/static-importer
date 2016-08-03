@@ -78,6 +78,12 @@ importer({
 * **Description**: Pattern to name files for the content type. If specified as a string, tokens wrapped in brackets will be replaced with their respective value from the API response. If specified as a function, it receives the API response as only parameter.
 
 ```js
+// Replaces the `{slug}` token with the value from the `slug` key from the API response
+{
+  filename: '{slug}.md'
+}
+
+// Dynamically create the filename based on the date and the slug returned by the API response, with the help of Moment.js
 {
   filename: ({ date, slug }) =>
     `${moment(date).format('YYYY-MM-DD')}-${slug}.md`
@@ -91,6 +97,14 @@ importer({
 * **Description**: Where to look for the relevant data in the API response; useful when the API returns more than just the data. Any falsey value will use the response as a whole.
 
 ```js
+// Uses the whole API response directly
+{
+  responsePath: null
+}
+
+// Consider an API returning something like:
+// { count: n, meta: { … }, data: { posts: [ … ] } }
+// To access the collection of posts, we could use:
 {
   responsePath: 'data.posts'
 }
@@ -108,9 +122,12 @@ importer({
 ```js
 {
   yfm: {
+    // Looks for the `title` key in the API response and applies its value
     title: true,
+    // Statically applies `post` as a value for `layout` variable
     layout: 'post',
-    author: (data) => data.author.login;
+    // Looks up for `author.nice_name` in the API response and applies its value
+    author: (data) => data.author.nice_name;
   }
 }
 ```
@@ -122,8 +139,14 @@ importer({
 * **Description**: Where to look for the page content in the API response. If specified as a function, it receives the API response as only parameter.
 
 ```js
+// The content of each item from the collection is stored in the `content` key from the API response
 {
-  contentPath: (data) => marked(data.markdown)
+  contentPath: 'content'
+}
+
+// The content of each item from the collection is stored in a `textContent` key and needs to post-processed
+{
+  contentPath: (data) => data.textContent.replace('<p></p>', '')
 }
 ```
 
