@@ -2,7 +2,6 @@ const { writeFile } = require('fs-promise');
 const path = require('path');
 const yfmer = require('./yfmer');
 const { template } = require('./utils');
-const { DEFAULT_DEST } = require('./constants');
 
 /**
  * Creates files based on response entities and global configuration.
@@ -41,14 +40,23 @@ const getFileContent = (entity, yfmSpec = {}) =>
  * @param {Object} config - Type configuration
  * @return {String}
  */
-const getFilePath = (entity, config) => {
-  const dest = config.dest || DEFAULT_DEST;
+const getFilePath = (entity, config) =>
+  path.join(config.dest, getFileName(entity, config));
 
-  if (typeof dest === 'function') {
-    return dest(entity);
+/**
+ * Gets the file name for the generated file.
+ * @param {Object} entity - Entity from the API response
+ * @param {Object} config - Type configuration
+ * @return {String}
+ */
+const getFileName = (entity, config) => {
+  const name = config.filename;
+
+  if (typeof name === 'function') {
+    return name(entity);
   }
 
-  return template(dest, entity);
+  return template(name, entity);
 }
 
 module.exports = createFiles;

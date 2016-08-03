@@ -1,4 +1,16 @@
 const importer = require('./importer')
+const { DEFAULT_DEST, DEFAULT_FILENAME } = require('./constants');
+
+/**
+ * Adds defaults to a content type in case they don’t have the required values.
+ * @param {Object} type - Type configuration
+ * @return {Object}
+ */
+const mergeDefaults = (type) => 
+  Object.assign({
+    dest: DEFAULT_DEST,
+    filename: DEFAULT_FILENAME
+  }, type)
 
 /**
  * Validates the initialisation options.
@@ -25,6 +37,8 @@ const validateOptions = (options) => {
   if (!haveEndpoint) {
     throw new Error('Some content types do not have an `endpoint`.')
   }
+
+  options.contentTypes = contentTypes.map(mergeDefaults);
 
   return options;
 }

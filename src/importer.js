@@ -3,7 +3,6 @@ const path = require('path');
 const { find } = require('lodash');
 const generator = require('./generator');
 const { parseResponse, refreshDir } = require('./utils');
-const { DEFAULT_DEST } = require('./constants');
 
 /**
  * Performs the API request and creates the files for given content type.
@@ -12,7 +11,7 @@ const { DEFAULT_DEST } = require('./constants');
  */
 const importType = (type) =>
   request(type.endpoint)
-    .then((response) => refreshDir(path.dirname(type.dest || DEFAULT_DEST))
+    .then((response) => refreshDir(type.dest)
       .then(() => parseResponse(response, type.name))
       .then((data) => generator(data, type))
     );
