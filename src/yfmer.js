@@ -35,7 +35,7 @@ const pickValues = (response = {}, spec = {}) =>
   Object.keys(spec).reduce((acc, key) => {
     const value = spec[key];
 
-    if (!value) {
+    if (!value || value === true) {
       acc[key] = get(response, key, '');
     } else if (typeof value === 'function') {
       acc[key] = value(response);
