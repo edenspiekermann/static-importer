@@ -1,5 +1,9 @@
 const importer = require('./importer')
-const { DEFAULT_DEST, DEFAULT_FILENAME } = require('./constants');
+const {
+  DEFAULT_DEST,
+  DEFAULT_FILENAME,
+  DEFAULT_RESPONSE_PATH
+} = require('./constants');
 
 /**
  * Adds defaults to a content type in case they don’t have the required values.
@@ -9,7 +13,8 @@ const { DEFAULT_DEST, DEFAULT_FILENAME } = require('./constants');
 const mergeDefaults = (type) => 
   Object.assign({
     dest: DEFAULT_DEST,
-    filename: DEFAULT_FILENAME
+    filename: DEFAULT_FILENAME,
+    responsePath: DEFAULT_RESPONSE_PATH
   }, type)
 
 /**

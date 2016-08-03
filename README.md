@@ -31,7 +31,7 @@ importer({
 });
 ```
 
-**`<contentType>.name`** — The `<contentType>.name` option defines the name of the content type. It is mandatory for it not to be considered invalid and discarded.
+**`<contentType>.name`** — The `<contentType>.name` mandatory option defines the name of the content type. It acts as a unique identifier for each type.
 
 ```js
 {
@@ -48,14 +48,36 @@ importer({
 }
 ```
 
-**`<contentType>.dest`** — The `<contentType>.dest` option defines where to output files and under which name for the currenty content type. Defaults to `./.import/{slug}.md`. It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item.
+**`<contentType>.dest`** — The `<contentType>.dest` option defines where to output files for the content type. Defaults to `./.import`.
 
 ```js
 {
   name: 'posts',
   endpoint: 'https://api.example.com/1.1/posts',
-  dest: ({ date, slug }) =>
-    moment(date).format('YYYY-MM-DD') + '-' + slug + '.md'
+  dest: '_posts'
+}
+```
+
+
+**`<contentType>.filename`** — The `<contentType>.filename` option defines the filename pattern to output files for the content type.
+It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function exposing the data response for current item. Defaults to `{slug}.md`.
+
+```js
+{
+  name: 'posts',
+  endpoint: 'https://api.example.com/1.1/posts',
+  filename: ({ date, slug }) =>
+    `${moment(date).format('YYYY-MM-DD')}-${slug}.md`
+}
+```
+
+**`<contentType>.responsePath`** — The `<contentType>.responsePath` option defines the path to the relevant collection in the API response. Any unfound, falsey or `true` value will result into using the root of the response. Defaults to `null`.
+
+```js
+{
+  name: 'posts',
+  endpoint: 'https://api.example.com/1.1/posts',
+  responsePath: 'data.posts'
 }
 ```
 

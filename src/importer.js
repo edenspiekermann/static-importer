@@ -12,7 +12,7 @@ const { parseResponse, refreshDir } = require('./utils');
 const importType = (type) =>
   request(type.endpoint)
     .then((response) => refreshDir(type.dest)
-      .then(() => parseResponse(response, type.name))
+      .then(() => parseResponse(response, type.responsePath))
       .then((data) => generator(data, type))
     );
 
