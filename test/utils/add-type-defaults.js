@@ -14,38 +14,38 @@ describe('The addTypeDefaults function', () => {
   });
 
   it('should set `dest` key if not already set', () => {
-    let actual, expect
+    let actual, expect;
 
-    actual = addTypeDefaults({}).dest
-    expect = DEFAULT_DEST
+    actual = addTypeDefaults({}).dest;
+    expect = DEFAULT_DEST;
     assert.deepEqual(actual, expect);
 
-    actual = addTypeDefaults({ dest: 'foo' }).dest
-    expect = 'foo'
+    actual = addTypeDefaults({ dest: 'foo' }).dest;
+    expect = 'foo';
     assert.deepEqual(actual, expect);
   });
 
   it('should set `filename` key if not already set', () => {
-    let actual, expect
+    let actual, expect;
 
-    actual = addTypeDefaults({}).filename
-    expect = DEFAULT_FILENAME
+    actual = addTypeDefaults({}).filename;
+    expect = DEFAULT_FILENAME;
     assert.deepEqual(actual, expect);
 
-    actual = addTypeDefaults({ filename: 'foo' }).filename
-    expect = 'foo'
+    actual = addTypeDefaults({ filename: 'foo' }).filename;
+    expect = 'foo';
     assert.deepEqual(actual, expect);
   });
 
   it('should set `responsePath` key if not already set', () => {
-    let actual, expect
+    let actual, expect;
 
-    actual = addTypeDefaults({}).responsePath
-    expect = DEFAULT_RESPONSE_PATH
+    actual = addTypeDefaults({}).responsePath;
+    expect = DEFAULT_RESPONSE_PATH;
     assert.deepEqual(actual, expect);
 
-    actual = addTypeDefaults({ responsePath: 'foo' }).responsePath
-    expect = 'foo'
+    actual = addTypeDefaults({ responsePath: 'foo' }).responsePath;
+    expect = 'foo';
     assert.deepEqual(actual, expect);
   });
 });

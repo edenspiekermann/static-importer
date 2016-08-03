@@ -9,12 +9,11 @@ const {
  * @param {Object} type - Type configuration
  * @return {Object}
  */
-const addTypeDefaults = (type) => 
+const addTypeDefaults = (type) =>
   Object.assign({
     dest: DEFAULT_DEST,
     filename: DEFAULT_FILENAME,
     responsePath: DEFAULT_RESPONSE_PATH
-  }, type)
+  }, type);
 
-
-module.exports = addTypeDefaults
+module.exports = addTypeDefaults;
