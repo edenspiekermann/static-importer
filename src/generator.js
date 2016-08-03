@@ -2,6 +2,7 @@ const { writeFile } = require('fs-promise');
 const path = require('path');
 const yfmer = require('./yfmer');
 const { template } = require('./utils');
+const { get } = require('lodash');
 
 /**
  * Creates files based on response entities and global configuration.
@@ -21,18 +22,25 @@ const createFiles = (entities, config) =>
 const createFile = (entity, config) =>
   writeFile(
     getFilePath(entity, config),
-    getFileContent(entity, config.yfm)
+    getFileContent(entity, config)
   );
 
 /**
  * Gets the contents to be written in the generated file, including the YAML
  * Front Matter.
  * @param {Object} entity - Entity from the API response
- * @param {Object} [yfmSpec = {}] - Front matter specification for the type
+ * @param {Object} config - Type configuration
  * @return {String}
  */
-const getFileContent = (entity, yfmSpec = {}) =>
-  yfmer(entity, yfmSpec) + entity.content;
+const getFileContent = (entity, config) => {
+  const YFM = yfmer(entity, config.yfm);
+
+  if (typeof config.contentPath === 'function') {
+    return YFM + config.contentPath(entity);
+  }
+
+  return YFM + get(entity, config.contentPath)
+}  
 
 /**
  * Gets the destination for the generated file.

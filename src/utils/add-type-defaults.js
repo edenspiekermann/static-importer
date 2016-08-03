@@ -1,7 +1,8 @@
 const {
   DEFAULT_DEST,
   DEFAULT_FILENAME,
-  DEFAULT_RESPONSE_PATH
+  DEFAULT_RESPONSE_PATH,
+  DEFAULT_CONTENT_PATH
 } = require('../constants');
 
 /**
@@ -13,7 +14,8 @@ const addTypeDefaults = (type) =>
   Object.assign({
     dest: DEFAULT_DEST,
     filename: DEFAULT_FILENAME,
-    responsePath: DEFAULT_RESPONSE_PATH
+    responsePath: DEFAULT_RESPONSE_PATH,
+    contentPath: DEFAULT_CONTENT_PATH
   }, type);
 
 module.exports = addTypeDefaults;

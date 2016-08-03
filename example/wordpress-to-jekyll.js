@@ -14,6 +14,7 @@ const postsOpts = {
   // Filename pattern (YYYY-MM-DD-slug.md)
   filename: ({ date, slug }) =>
     `${moment(date).format('YYYY-MM-DD')}-${slug}.md`,
+  contentPath: (data) => data.content.replace('&nbsp;', ''),
   // YAML Front Matter specification
   yfm: {
     title: true,

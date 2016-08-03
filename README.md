@@ -98,6 +98,16 @@ It accepts either string with `{tokens}` (e.g. `{slug}.md`), or a function expos
 }
 ```
 
+**`<contentType>.contentPath`** — The `<contentType>.contentPath` option defines the path to the page content in the API response. It accepts a string or a function receiving the API response. Defaults to `content`.
+
+```js
+{
+  name: 'posts',
+  endpoint: 'https://api.example.com/1.1/posts',
+  contentPath: (data) => marked(data.markdown)
+}
+```
+
 ## Example
 
 * [WordPress to Jekyll](https://github.com/edenspiekermann/wp-importer/blob/master/example/wordpress-to-jekyll.js)
